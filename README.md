@@ -1,0 +1,2 @@
+# seguimientodeunidadesaalkab
+logistica y seguridad
