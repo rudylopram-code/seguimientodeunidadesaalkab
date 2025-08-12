@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Integral de Gestión AALKAB</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Estilos de Login y Registro */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input[type="file"] {
+            border: 1px dashed #ced4da;
+            background-color: #f8f9fa;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-small {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .default-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Estilos de la Aplicación Principal */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: #f4f7f9;
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+
+        .navbar .logo {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #f8f9fa;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+
+        .sidebar-menu .icon {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 2em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .dashboard-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Estilos de notificaciones */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .notification.show { transform: translateX(0); }
+        .notification.success { background: linear-gradient(45deg, #28a745, #20c997); }
+        .notification.error { background: linear-gradient(45deg, #dc3545, #e83e8c); }
+        .notification.warning { background: linear-gradient(45deg, #ffc107, #fd7e14); }
+        .notification.info { background: linear-gradient(45deg, #17a2b8, #138496); }
+
+        /* Estilos de tablas y formularios de seguimiento */
+        .tracking-form, .table-container {
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .form-row input[type="file"] {
+            padding: 12px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        label.form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 12px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 12px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            font-size: 11px;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .status-cell {
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            font-size: 11px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-select {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 11px;
+            background: #f8f9fa;
+        }
+
+        .alerta-activa {
+            background-color: #ffe0e0;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        .alerta-activa:hover {
+            background: #ffc2c2 !important;
+        }
+        
+        /* Colores para el estado */
+        .status-programado { background-color: #95a5a6; } /* Gris */
+        .status-cargando { background-color: #f39c12; }    /* Naranja */
+        .status-en-ruta { background-color: #3498db; }      /* Azul */
+        .status-detenido { background-color: #e67e22; }     /* Naranja oscuro */
+        .status-llegada { background-color: #1abc9c; }      /* Turquesa */
+        .status-descarga { background-color: #2ecc71; }     /* Verde */
+        .status-finalizado { background-color: #27ae60; }   /* Verde oscuro */
+        .status-falla-mecanica { background-color: #e74c3c; } /* Rojo */
+        .status-robada { background-color: #c0392b; }       /* Rojo intenso */
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .mini-btn {
+            padding: 4px 8px;
+            font-size: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 2px;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+        .btn-track {
+            background: #9b59b6;
+        }
+
+        .btn-image {
+            background: #3498db;
+        }
+
+        .btn-full-width {
+            width: 100%;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+            .navbar h1 {
+                font-size: 1.2em;
+            }
+            .user-info {
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <img src="https://aalkab.com/assets/img/logo.png" alt="Aalkab Logo" style="height: 60px; margin-bottom: 20px;">
+            <h1>🚛 Sistema Integral</h1>
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" id="loginUsername" placeholder="Ingrese su usuario" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" id="loginPassword" placeholder="Ingrese su contraseña" autocomplete="current-password">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="login()">Iniciar Sesión</button>
+            <button type="button" class="btn btn-secondary" onclick="showRegister()">Crear Cuenta</button>
+            <div class="default-credentials">
+                <strong>Credenciales por defecto:</strong><br>
+                Usuario: <strong>admin</strong><br>
+                Contraseña: <strong>admin123</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-container" id="registerScreen" style="display: none;">
+        <div class="login-box">
+            <h1>📝 Crear Cuenta</h1>
+            <div class="form-group">
+                <label>Nombre Completo:</label>
+                <input type="text" id="regFullName" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" id="regUsername" placeholder="Usuario único">
+            </div>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" id="regPassword" placeholder="Contraseña">
+            </div>
+            <div class="form-group">
+                <label>Departamento:</label>
+                <select id="regDepartment">
+                    <option value="">Seleccionar</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Logística">Logística</option>
+                    <option value="Contabilidad">Contabilidad</option>
+                    <option value="Operaciones">Operaciones</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="register()">Crear Cuenta</button>
+            <button type="button" class="btn btn-secondary" onclick="showLogin()">Volver al Login</button>
+        </div>
+    </div>
+
+    <div class="app-container" id="appContainer">
+        <nav class="navbar">
+            <div style="display: flex; align-items: center;">
+                <img src="https://aalkab.com/assets/img/logo.png" alt="Aalkab Logo" class="logo">
+                <h1>Sistema Integral de Gestión</h1>
+            </div>
+            <div class="user-info">
+                <span id="currentUserName">Usuario</span>
+                <div class="user-avatar" id="userAvatar">U</div>
+                <button class="btn btn-primary btn-small" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a class="menu-item active" onclick="showSection('dashboard', this)">
+                    <span class="icon">📊</span> Dashboard
+                </a></li>
+                <li><a class="menu-item" onclick="showSection('seguimiento', this)">
+                    <span class="icon">🚛</span> Seguimiento Unidades
+                </a></li>
+                <li><a class="menu-item" onclick="showSection('logistica', this)">
+                    <span class="icon">📦</span> Logística
+                </a></li>
+                <li><a class="menu-item" onclick="showSection('contabilidad', this)">
+                    <span class="icon">💰</span> Contabilidad
+                </a></li>
+                <li><a class="menu-item" onclick="showSection('usuarios', this)">
+                    <span class="icon">👥</span> Usuarios
+                </a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section class="content-section active" id="dashboard">
+                <div class="section-header">
+                    <h2>📊 Dashboard</h2>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3 id="totalUnidades">0</h3>
+                        <p>Unidades Activas</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="unidadesEnRuta">0</h3>
+                        <p>En Ruta</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="unidadesFinalizadas">0</h3>
+                        <p>Finalizadas Hoy</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="totalRegistrados">0</h3>
+                        <p>Total Registros</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 50px;">
+                    <h3>¡Bienvenido al Sistema Integral de Gestión!</h3>
+                    <p>Use el menú lateral para navegar entre las diferentes secciones.</p>
+                </div>
+            </section>
+
+            <section class="content-section" id="seguimiento">
+                <div class="section-header">
+                    <h2>🚛 Seguimiento de Unidades</h2>
+                </div>
+
+                <div class="tracking-form">
+                    <h3>➕ Registrar Nueva Programación</h3>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Placas Unidad *</label>
+                            <input type="text" id="noUnidad" placeholder="placa">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Operador *</label>
+                            <input type="text" id="operador" placeholder="Nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ruta *</label>
+                            <select id="ruta">
+                                <option value="">Seleccionar ruta</option>
+                                <option value="IMILE">IMILE (30 min)</option>
+                                <option value="AMPM">AMPM (40 min)</option>
+                                <option value="CAINIAO">CAINIAO (40 min)</option>
+                                <option value="KLS">KLS (45 min)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha Programada</label>
+                            <input type="date" id="fechaProgramada">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Cliente</label>
+                            <input type="text" id="cliente" placeholder="Nombre del cliente">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">No. Tarjeta Combustible</label>
+                            <input type="text" id="tarjetaCombustible" placeholder="Número de tarjeta">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">No. TAG</label>
+                            <input type="text" id="tag" placeholder="Número de TAG">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Origen *</label>
+                            <input type="text" id="origen" placeholder="Ciudad origen">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Destino *</label>
+                            <input type="text" id="destino" placeholder="Ciudad destino">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subir Imagen</label>
+                            <input type="file" id="imagenProgramacion" accept="image/*">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-full-width" onclick="agregarProgramacion()">➕ Registrar Programación</button>
+                </div>
+                
+                <h3 style="margin-top: 50px;">🚚 Unidades en Operación (<span id="countActivas">0</span>)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Unidad</th>
+                                <th>Operador</th>
+                                <th>Ruta</th>
+                                <th>Origen → Destino</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Status</th>
+                                <th>Último Update</th>
+                                <th>Ubicación Actual</th>
+                                <th>Próxima Alerta</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unidadesActivasBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary export-btn" onclick="exportarActivas()">📊 Exportar Activas</button>
+                    <button class="btn btn-secondary export-btn" onclick="limpiarFinalizadas()">🧹 Limpiar Finalizadas</button>
+                </div>
+                
+                <h3 style="margin-top: 50px;">📋 Historial de Todas las Unidades (<span id="countHistorial">0</span>)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Unidad</th>
+                                <th>Operador</th>
+                                <th>Ruta</th>
+                                <th>Cliente</th>
+                                <th>Trayecto</th>
+                                <th>Status Final</th>
+                                <th>Seguimientos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historialBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary export-btn" onclick="exportarHistorial()">📊 Exportar Historial</button>
+                    <button class="btn btn-secondary export-btn" onclick="limpiarHistorial()">🗑️ Limpiar Historial</button>
+                </div>
+
+            </section>
+
+            <section class="content-section" id="logistica">
+                <div class="section-header">
+                    <h2>📦 Gestión Logística</h2>
+                </div>
+                <p>Sección de logística en desarrollo...</p>
+            </section>
+
+            <section class="content-section" id="contabilidad">
+                <div class="section-header">
+                    <h2>💰 Gestión Contable</h2>
+                </div>
+                <p>Sección de contabilidad en desarrollo...</p>
+            </section>
+
+            <section class="content-section" id="usuarios">
+                <div class="section-header">
+                    <h2>👥 Gestión de Usuarios</h2>
+                </div>
+                <p>Sección de usuarios en desarrollo...</p>
+            </section>
+        </main>
+    </div>
+
+    <audio id="alert-sound" src="https://gfxsounds.com/wp-content/uploads/2023/09/Ambulance-siren-emergency-long-burst.mp3"></audio>
+
+    <script>
+        // VARIABLES GLOBALES
+        let currentUser = null;
+        let users = [];
+        let unidades = [];
+        let historialCompleto = [];
+        let timers = {};
+
+        const intervalos = {
+            'IMILE': 30,
+            'AMPM': 40,
+            'CAINIAO': 40,
+            'KLS': 45
+        };
+
+        const statusOptions = [
+            'Programado',
+            'Cargando',
+            'En Ruta',
+            'Detenido',
+            'Llegada',
+            'Descarga',
+            'Finalizado',
+            'Falla Mecánica',
+            'Robada'
+        ];
+
+        // INICIALIZAR AL CARGAR LA PÁGINA
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+            cargarDatosUnidades();
+            actualizarTodas();
+            setInterval(guardarDatosUnidades, 60000); // Guardar datos cada minuto
+        });
+
+        // CONFIGURAR EVENT LISTENERS
+        function setupEventListeners() {
+            document.getElementById('loginUsername').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+            document.getElementById('noUnidad').addEventListener('keypress', (e) => { if (e.key === 'Enter') agregarProgramacion(); });
+            document.getElementById('operador').addEventListener('keypress', (e) => { if (e.key === 'Enter') agregarProgramacion(); });
+        }
+
+        // --- FUNCIONES DE AUTENTICACIÓN Y USUARIOS ---
+
+        function initializeData() {
+            const savedUsers = localStorage.getItem('sistema_users');
+            if (savedUsers) {
+                try { users = JSON.parse(savedUsers); }
+                catch (error) { console.error('Error cargando usuarios:', error); users = []; }
+            }
+
+            if (users.length === 0) {
+                const adminUser = {
+                    id: 1,
+                    username: 'admin',
+                    password: 'admin123',
+                    fullName: 'Administrador del Sistema',
+                    department: 'Administrador',
+                    dateCreated: new Date().toLocaleDateString('es-ES'),
+                    status: 'Activo',
+                    lastLogin: null
+                };
+                users.push(adminUser);
+                localStorage.setItem('sistema_users', JSON.stringify(users));
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const existing = document.querySelector('.notification');
+            if (existing) { existing.remove(); }
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => { notification.classList.add('show'); }, 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => { if (notification.parentNode) { notification.parentNode.removeChild(notification); } }, 300);
+            }, 3000);
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!username || !password) {
+                showNotification('Por favor, complete todos los campos', 'error');
+                return;
+            }
+
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                if (user.status === 'Inactivo') {
+                    showNotification('Usuario inactivo. Contacte al administrador.', 'error');
+                    return;
+                }
+                currentUser = user;
+                user.lastLogin = new Date().toLocaleDateString('es-ES');
+                localStorage.setItem('sistema_users', JSON.stringify(users));
+                showNotification(`¡Bienvenido ${user.fullName}!`, 'success');
+                showApp();
+            } else {
+                showNotification('Usuario o contraseña incorrectos', 'error');
+            }
+        }
+
+        function register() {
+            const fullName = document.getElementById('regFullName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const department = document.getElementById('regDepartment').value;
+            if (!fullName || !username || !password || !department) {
+                showNotification('Complete todos los campos', 'error');
+                return;
+            }
+            if (users.find(u => u.username === username)) {
+                showNotification('El usuario ya existe', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                username,
+                password,
+                fullName,
+                department,
+                dateCreated: new Date().toLocaleDateString('es-ES'),
+                status: 'Activo',
+                lastLogin: null
+            };
+            users.push(newUser);
+            localStorage.setItem('sistema_users', JSON.stringify(users));
+            showNotification('Usuario creado exitosamente', 'success');
+            clearRegisterForm();
+            showLogin();
+        }
+
+        function showRegister() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'flex';
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('currentUserName').textContent = currentUser.fullName;
+            document.getElementById('userAvatar').textContent = currentUser.fullName.charAt(0).toUpperCase();
+            actualizarDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            showNotification('Sesión cerrada correctamente', 'info');
+            showLogin();
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function clearRegisterForm() {
+            document.getElementById('regFullName').value = '';
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regDepartment').value = '';
+        }
+
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+            
+            if (sectionId === 'dashboard') {
+                actualizarDashboard();
+            }
+            if (sectionId === 'seguimiento') {
+                actualizarTablasSeguimiento();
+            }
+        }
+        
+        // --- FUNCIONES DE SEGUIMIENTO DE UNIDADES ---
+
+        function cargarDatosUnidades() {
+            const datos = localStorage.getItem('unidadesSeguimiento');
+            if (datos) {
+                const parsedDatos = JSON.parse(datos);
+                unidades = parsedDatos.unidades || [];
+                historialCompleto = parsedDatos.historial || [];
+                unidades.forEach(unidad => {
+                    if (!['Finalizado', 'Llegada'].includes(unidad.status)) {
+                        iniciarTimer(unidad.id, intervalos[unidad.ruta] || 30);
+                    }
+                });
+            }
+        }
+
+        function guardarDatosUnidades() {
+            const datos = {
+                unidades: unidades,
+                historial: historialCompleto,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('unidadesSeguimiento', JSON.stringify(datos));
+        }
+
+        function agregarProgramacion() {
+            const noUnidad = document.getElementById('noUnidad').value.trim();
+            const operador = document.getElementById('operador').value.trim();
+            const ruta = document.getElementById('ruta').value;
+            const origen = document.getElementById('origen').value.trim();
+            const destino = document.getElementById('destino').value.trim();
+            const fechaProgramada = document.getElementById('fechaProgramada').value;
+            const cliente = document.getElementById('cliente').value.trim();
+            const tarjetaCombustible = document.getElementById('tarjetaCombustible').value.trim();
+            const tag = document.getElementById('tag').value.trim();
+            const imagenFile = document.getElementById('imagenProgramacion').files[0];
+
+            if (!noUnidad || !operador || !ruta || !origen || !destino || !fechaProgramada) {
+                showNotification('Por favor, completa todos los campos marcados con *', 'error');
+                return;
+            }
+
+            const nuevaUnidad = crearNuevaUnidad(noUnidad, operador, ruta, origen, destino, fechaProgramada, cliente, tarjetaCombustible, tag, imagenFile);
+            unidades.push(nuevaUnidad);
+            iniciarTimer(nuevaUnidad.id, intervalos[ruta]);
+            limpiarFormulario();
+            actualizarTodas();
+            guardarDatosUnidades();
+            showNotification('✅ Programación de ruta registrada correctamente', 'success');
+        }
+
+        function crearNuevaUnidad(noUnidad, operador, ruta, origen, destino, fechaProgramada, cliente, tarjetaCombustible, tag, imagenFile) {
+            const ahora = new Date();
+            let imagenURL = null;
+            if (imagenFile) {
+                imagenURL = URL.createObjectURL(imagenFile);
+            }
+            return {
+                id: Date.now(),
+                noUnidad: noUnidad,
+                operador: operador,
+                ruta: ruta,
+                origen: origen,
+                destino: destino,
+                fechaProgramada: fechaProgramada,
+                cliente: cliente,
+                tarjetaCombustible: tarjetaCombustible,
+                tag: tag,
+                status: 'Programado',
+                horaCreacion: ahora.toISOString(),
+                ultimoUpdate: ahora.toLocaleTimeString(),
+                ubicacionActual: origen,
+                seguimientos: [{
+                    timestamp: ahora.toISOString(),
+                    ubicacion: origen,
+                    status: 'Programado',
+                    observaciones: 'Unidad registrada en el sistema',
+                    imagen: imagenURL
+                }]
+            };
+        }
+
+        function iniciarTimer(unidadId, intervaloMinutos) {
+            if (timers[unidadId]) {
+                clearInterval(timers[unidadId]);
+            }
+            timers[unidadId] = setInterval(() => {
+                const unidad = unidades.find(u => u.id === unidadId);
+                if (unidad && !['Finalizado', 'Llegada'].includes(unidad.status)) {
+                    mostrarAlertaVisualYSonora(unidad);
+                }
+            }, intervaloMinutos * 60 * 1000);
+        }
+
+        function mostrarAlertaVisualYSonora(unidad) {
+            const row = document.querySelector(`#unidadesActivasBody tr[data-id="${unidad.id}"]`);
+            if (row) {
+                row.classList.add('alerta-activa');
+            }
+            const audio = document.getElementById('alert-sound');
+            audio.play().catch(e => console.error("Error al reproducir audio:", e));
+            showNotification(`⚠️ ACTUALIZAR STATUS - Unidad: ${unidad.noUnidad} - Ruta: ${unidad.ruta}`, 'warning');
+        }
+
+        function actualizarStatus(unidadId, nuevoStatus) {
+            const unidad = unidades.find(u => u.id === unidadId);
+            if (unidad) {
+                const statusAnterior = unidad.status;
+                unidad.status = nuevoStatus;
+                unidad.ultimoUpdate = new Date().toLocaleTimeString();
+
+                const row = document.querySelector(`#unidadesActivasBody tr[data-id="${unidad.id}"]`);
+                if (row) {
+                    row.classList.remove('alerta-activa');
+                }
+                
+                unidad.seguimientos.push({
+                    timestamp: new Date().toISOString(),
+                    ubicacion: unidad.ubicacionActual,
+                    status: nuevoStatus,
+                    observaciones: `Status cambiado de "${statusAnterior}" a "${nuevoStatus}"`
+                });
+
+                if (nuevoStatus === 'Finalizado') {
+                    moverAHistorial(unidad);
+                    clearInterval(timers[unidadId]);
+                    delete timers[unidadId];
+                }
+
+                actualizarTodas();
+                guardarDatosUnidades();
+            }
+        }
+
+        function actualizarUbicacion(unidadId) {
+            const unidad = unidades.find(u => u.id === unidadId);
+            if (unidad) {
+                const nuevaUbicacion = prompt('Ingresa la nueva ubicación o coordenadas:', unidad.ubicacionActual);
+                if (nuevaUbicacion && nuevaUbicacion.trim() !== '') {
+                    unidad.ubicacionActual = nuevaUbicacion.trim();
+                    unidad.ultimoUpdate = new Date().toLocaleTimeString();
+                    unidad.seguimientos.push({
+                        timestamp: new Date().toISOString(),
+                        ubicacion: nuevaUbicacion.trim(),
+                        status: unidad.status,
+                        observaciones: 'Ubicación actualizada'
+                    });
+                    
+                    clearInterval(timers[unidadId]);
+                    iniciarTimer(unidadId, intervalos[unidad.ruta]);
+                    const row = document.querySelector(`#unidadesActivasBody tr[data-id="${unidad.id}"]`);
+                    if (row) {
+                        row.classList.remove('alerta-activa');
+                    }
+
+                    actualizarTodas();
+                    guardarDatosUnidades();
+                    showNotification('✅ Ubicación actualizada', 'success');
+                }
+            }
+        }
+        
+        function subirImagen(unidadId) {
+            const unidad = unidades.find(u => u.id === unidadId);
+            if (unidad) {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const newImageURL = URL.createObjectURL(file);
+                        unidad.seguimientos.push({
+                            timestamp: new Date().toISOString(),
+                            ubicacion: unidad.ubicacionActual,
+                            status: unidad.status,
+                            observaciones: 'Imagen de seguimiento subida',
+                            imagen: newImageURL
+                        });
+                        guardarDatosUnidades();
+                        showNotification('✅ Imagen subida correctamente', 'success');
+                    }
+                };
+                fileInput.click();
+            }
+        }
+
+        function verSeguimientos(unidadId) {
+            const unidad = unidades.find(u => u.id === unidadId) || historialCompleto.find(u => u.id === unidadId);
+            if (unidad) {
+                let historial = 'HISTORIAL DE SEGUIMIENTOS\n';
+                historial += `Unidad: ${unidad.noUnidad} - ${unidad.operador}\n\n`;
+                
+                unidad.seguimientos.forEach((seg, index) => {
+                    const fecha = new Date(seg.timestamp).toLocaleString();
+                    historial += `${index + 1}. ${fecha}\n`;
+                    historial += `   Status: ${seg.status}\n`;
+                    historial += `   Ubicación: ${seg.ubicacion}\n`;
+                    if (seg.observaciones) {
+                        historial += `   Observaciones: ${seg.observaciones}\n`;
+                    }
+                    if (seg.imagen) {
+                        historial += `   Imagen: ${seg.imagen}\n`;
+                    }
+                    historial += '\n';
+                });
+                alert(historial);
+            }
+        }
+
+        function eliminarUnidad(unidadId) {
+            if (confirm('¿Estás seguro de eliminar esta unidad?')) {
+                unidades = unidades.filter(u => u.id !== unidadId);
+                if (timers[unidadId]) {
+                    clearInterval(timers[unidadId]);
+                    delete timers[unidadId];
+                }
+                actualizarTodas();
+                guardarDatosUnidades();
+                showNotification('✅ Unidad eliminada', 'success');
+            }
+        }
+
+        function moverAHistorial(unidad) {
+            historialCompleto.push({
+                ...unidad,
+                fechaFinalizacion: new Date().toISOString()
+            });
+            unidades = unidades.filter(u => u.id !== unidad.id);
+        }
+
+        function actualizarTablasSeguimiento() {
+            const tbodyActivas = document.getElementById('unidadesActivasBody');
+            tbodyActivas.innerHTML = '';
+            document.getElementById('countActivas').textContent = unidades.length;
+            
+            unidades.forEach(unidad => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', unidad.id);
+                const proximaAlerta = calcularProximaAlerta(unidad.ultimoUpdate, intervalos[unidad.ruta]);
+                
+                const statusClass = `status-${unidad.status.toLowerCase().replace(/\s/g, '-')}`;
+
+                row.innerHTML = `
+                    <td><strong>${unidad.noUnidad}</strong></td>
+                    <td>${unidad.operador}</td>
+                    <td><span style="background: #667eea; color: white; padding: 3px 8px; border-radius: 12px; font-size: 10px;">${unidad.ruta}</span></td>
+                    <td>${unidad.origen} → ${unidad.destino}</td>
+                    <td>${unidad.cliente || '-'}</td>
+                    <td>${unidad.fechaProgramada || '-'}</td>
+                    <td>
+                        <span class="status-cell ${statusClass}">${unidad.status}</span>
+                        <select onchange="actualizarStatus(${unidad.id}, this.value)" class="status-select">
+                            ${statusOptions.map(status =>
+                                `<option value="${status}" ${unidad.status === status ? 'selected' : ''}>${status}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>${unidad.ultimoUpdate}</td>
+                    <td onclick="actualizarUbicacion(${unidad.id})" style="cursor: pointer; color: #667eea; text-decoration: underline;">${unidad.ubicacionActual || '-'} 📍</td>
+                    <td>${proximaAlerta}</td>
+                    <td>
+                        <button onclick="subirImagen(${unidad.id})" class="mini-btn btn-image" title="Subir imagen">🖼️</button>
+                        <button onclick="verSeguimientos(${unidad.id})" class="mini-btn btn-track" title="Ver seguimientos">📍</button>
+                        <button onclick="eliminarUnidad(${unidad.id})" class="mini-btn btn-delete" title="Eliminar">🗑️</button>
+                    </td>
+                `;
+                tbodyActivas.appendChild(row);
+            });
+
+            const tbodyHistorial = document.getElementById('historialBody');
+            tbodyHistorial.innerHTML = '';
+            document.getElementById('countHistorial').textContent = historialCompleto.length;
+
+            historialCompleto.forEach(unidad => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${unidad.status.toLowerCase().replace(/\s/g, '-')}`;
+                const statusHtml = `<span class="status-cell ${statusClass}">${unidad.status}</span>`;
+                row.innerHTML = `
+                    <td>${unidad.fechaProgramada || new Date(unidad.horaCreacion).toLocaleDateString()}</td>
+                    <td><strong>${unidad.noUnidad}</strong></td>
+                    <td>${unidad.operador}</td>
+                    <td>${unidad.ruta}</td>
+                    <td>${unidad.cliente || '-'}</td>
+                    <td>${unidad.origen} → ${unidad.destino}</td>
+                    <td>${statusHtml}</td>
+                    <td>${unidad.seguimientos ? unidad.seguimientos.length : 0} registros</td>
+                    <td>
+                        <button onclick="verSeguimientos(${unidad.id})" class="mini-btn btn-track">Ver 📍</button>
+                    </td>
+                `;
+                tbodyHistorial.appendChild(row);
+            });
+        }
+        
+        function actualizarDashboard() {
+            const totalRegistrados = unidades.length + historialCompleto.length;
+            const unidadesEnRuta = unidades.filter(u => u.status === 'En Ruta').length;
+            const unidadesFinalizadas = historialCompleto.filter(u => {
+                const hoy = new Date().toISOString().split('T')[0];
+                return u.fechaFinalizacion && u.fechaFinalizacion.includes(hoy);
+            }).length;
+
+            document.getElementById('totalUnidades').textContent = unidades.length;
+            document.getElementById('unidadesEnRuta').textContent = unidadesEnRuta;
+            document.getElementById('unidadesFinalizadas').textContent = unidadesFinalizadas;
+            document.getElementById('totalRegistrados').textContent = totalRegistrados;
+        }
+
+        function actualizarTodas() {
+            actualizarTablasSeguimiento();
+            actualizarDashboard();
+        }
+
+        function calcularProximaAlerta(ultimoUpdate, intervaloMinutos) {
+            try {
+                const ahora = new Date();
+                const partes = ultimoUpdate.split(':');
+                const ultima = new Date();
+                ultima.setHours(parseInt(partes[0]), parseInt(partes[1]), parseInt(partes[2]) || 0);
+
+                const proxima = new Date(ultima.getTime() + (intervaloMinutos * 60 * 1000));
+                
+                if (proxima < ahora) {
+                    return 'Alerta Activa';
+                }
+                return proxima.toLocaleTimeString();
+
+            } catch (error) {
+                return 'Error';
+            }
+        }
+        
+        function limpiarFormulario() {
+            document.getElementById('noUnidad').value = '';
+            document.getElementById('operador').value = '';
+            document.getElementById('ruta').value = '';
+            document.getElementById('origen').value = '';
+            document.getElementById('destino').value = '';
+            document.getElementById('fechaProgramada').value = new Date().toISOString().split('T')[0];
+            document.getElementById('cliente').value = '';
+            document.getElementById('tarjetaCombustible').value = '';
+            document.getElementById('tag').value = '';
+            document.getElementById('imagenProgramacion').value = '';
+        }
+        
+        function exportarActivas() {
+            if (unidades.length === 0) {
+                showNotification('No hay unidades activas para exportar', 'warning');
+                return;
+            }
+            
+            let csv = 'No. Unidad,Operador,Ruta,Origen,Destino,Cliente,Fecha Programada,Status,Ubicacion Actual,Ultimo Update\n';
+            unidades.forEach(unidad => {
+                csv += `${unidad.noUnidad},${unidad.operador},${unidad.ruta},${unidad.origen},${unidad.destino},${unidad.cliente || ''},${unidad.fechaProgramada || ''},${unidad.status},"${unidad.ubicacionActual || ''}",${unidad.ultimoUpdate}\n`;
+            });
+            downloadCSV(csv, 'unidades_activas.csv');
+        }
+
+        function exportarHistorial() {
+            if (historialCompleto.length === 0) {
+                showNotification('No hay historial para exportar', 'warning');
+                return;
+            }
+            
+            let csv = 'Fecha,No. Unidad,Operador,Ruta,Cliente,Trayecto,Status Final,Seguimientos\n';
+            historialCompleto.forEach(unidad => {
+                csv += `${unidad.fechaProgramada || ''},${unidad.noUnidad},${unidad.operador},${unidad.ruta},${unidad.cliente || ''},"${unidad.origen} -> ${unidad.destino}",${unidad.status},${unidad.seguimientos ? unidad.seguimientos.length : 0}\n`;
+            });
+            downloadCSV(csv, 'historial_unidades.csv');
+        }
+        
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+        
+        function limpiarFinalizadas() {
+            if (confirm('¿Estás seguro de que quieres limpiar las unidades finalizadas?')) {
+                unidades = unidades.filter(u => u.status !== 'Finalizado');
+                actualizarTodas();
+                guardarDatosUnidades();
+                showNotification('✅ Unidades finalizadas limpiadas', 'success');
+            }
+        }
+
+        function limpiarHistorial() {
+            if (confirm('¿Estás seguro de que quieres limpiar todo el historial? Esto no se puede deshacer.')) {
+                historialCompleto = [];
+                actualizarTodas();
+                guardarDatosUnidades();
+                showNotification('✅ Historial limpiado.', 'success');
+            }
+        }
+    </script>
+</body>
+</html>
